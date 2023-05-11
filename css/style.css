@@ -1,0 +1,109 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    background-color: #009578;
+    display: flex;
+    justify-content: center;
+    padding: 4.2rem 2.4rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.to-do-list-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.4rem;
+    max-width: 800px;
+    width: 100%;
+}
+
+.not-started,
+.in-progress,
+.completed {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+h2 {
+    font-size: 3.2rem;
+    color: white;
+    margin: 20px 0;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+ul li {
+    display: block;
+    background-color: white !important;
+    color: #000;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    padding: 1.4rem;
+    font-size: 1.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+input {
+    width: 100%;
+    border: none;
+    font-size: 1.6rem;
+    background-color: white;
+}
+
+input:focus {
+    outline: 0;
+}
+
+ul li span {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.edit-note {
+    color: #009578;
+}
+
+.delete-note {
+    color: #e74c3c;
+}
+
+.add-note {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/*****************/
+/* BELOW 800px */
+/*****************/
+@media (max-width:45em) {
+    .to-do-list-container {
+        grid-template-columns: 1fr;
+    }
+}
