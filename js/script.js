@@ -49,6 +49,7 @@ const displayData = function (btn, data = '') {
 function updateStartedUi() {
     if (localStorage.getItem('not-started') != null) {
         dataListStarted = [...new Set(JSON.parse(localStorage.getItem('not-started')))]
+        dataListStarted = [...new Set(dataListStarted)]
     }
 
     dataListStarted.forEach(data => {
@@ -59,6 +60,7 @@ function updateStartedUi() {
 function updateProgressUi() {
     if (localStorage.getItem('in-progress') != null) {
         dataListProgress = [...new Set(JSON.parse(localStorage.getItem('in-progress')))]
+        dataListProgress = [...new Set(dataListProgress)]
     }
 
     dataListProgress.forEach(data => {
@@ -69,6 +71,7 @@ function updateProgressUi() {
 function updateCompletedUi() {
     if (localStorage.getItem('completed') != null) {
         dataListCompleted = [...new Set(JSON.parse(localStorage.getItem('completed')))]
+        dataListCompleted = [...new Set(dataListCompleted)]
     }
 
     dataListCompleted.forEach(data => {
@@ -99,7 +102,7 @@ function getUserData(closeInput, inputName, dataListName) {
         input.addEventListener('change', (e) => {
 
             dataListName.push(input.value)
-            localStorage.setItem(inputName, JSON.stringify(dataListName))
+            localStorage.setItem(inputName, JSON.stringify([...new Set(dataListName)]))
             input.setAttribute('disabled', 'true')
         })
     })
@@ -199,94 +202,127 @@ function draggableMouse() {
 function dropElement(dragEle, listType, storageName) {
     let input = dragEle.querySelector('input')
     listType.push(input.value)
-    localStorage.setItem(storageName, JSON.stringify(listType))
+    localStorage.setItem(storageName, JSON.stringify([...new Set(listType)]))
 }
 
 function removedDraggedEle (listType,input,storageName) {
     let index = listType.indexOf(input);
     listType.splice(index, 1)
-    localStorage.setItem(storageName, JSON.stringify(listType))
+    localStorage.setItem(storageName, JSON.stringify([...new Set(listType)]))
 }
 
+
+
 function draggableTouch() {
-    const li = document.querySelectorAll('.task');
-    let closeStartDiv , closeEndDiv , drag;
-    li.forEach(item => { 
-        deleteTasks()
-        item.addEventListener('touchstart',(e)=>{
-            closeStartDiv = item.closest('div');
-            console.log(closeStartDiv);
-            item.style.position ='absolute';
-            item.style.width='250px'
-            item.style.opacity = 0.5;
-           })
-        })
-    
-
+    const li = document.querySelectorAll('.task input');
+    let drag = false
+    let closeLi , closeStartDiv , closeEndDiv;
     li.forEach(item => {
-
-        item.addEventListener('touchend', (e) => {
-            closeEndDiv = item.closest('div');
-            if(closeStartDiv.className  !== closeEndDiv.className) {
-                let input = item.querySelector('input');
-                if(closeStartDiv.className === 'not-started') {
-                   let index = dataListStarted.indexOf(input.value);
-                   dataListStarted.splice(index,1)
-                   localStorage.setItem('not-started',JSON.stringify(dataListStarted))
-                }
-            }
-            console.log(closeEndDiv);
-            e.preventDefault()
-            item.style.position = 'relative';
-            item.style.width = 'auto'
-            item.style.top = 'auto';
-            item.style.left= 'auto'
-            item.style.opacity = 1;
+        item.addEventListener('touchstart',(e)=>{
+            drag = true;
+            closeLi = e.target.closest('li');
+            closeStartDiv = closeLi.closest('div')
+           
+            closeLi.style.position = 'absolute';
+            closeLi.style.opacity = 0.5;
         })
     })
+
+
+    li.forEach(item => {
+        item.addEventListener('touchend', (e) => {
+            closeLi = e.target.closest('li');
+            closeEndDiv = closeLi.closest('div')
+            closeLi.style.position = 'relative';
+            closeLi.style.top = 'auto';
+            closeLi.style.left = 'auto';
+            closeLi.style.width = 'auto'
+            closeLi.style.opacity = 1;
+            drag = false;
+
+        if(!drag) {
+                if(closeStartDiv.className === 'not-started') {
+                    dataListStarted =  [...new Set(dataListStarted)]
+                    const index = dataListStarted.indexOf(item.value);
+                    dataListStarted.splice(index,1)
+
+                    localStorage.setItem('not-started', JSON.stringify([...new Set(dataListStarted)]))
+                }
+
+
+                if (closeStartDiv.className === 'in-progress') {
+                    const index = [... new Set(dataListProgress)].indexOf(item.value);
+                    dataListProgress = [...new Set(dataListProgress)]
+                    console.log(dataListProgress);
+                    dataListProgress.splice(index, 1)
+                    console.log(dataListProgress);
+                    localStorage.setItem('in-progress', JSON.stringify([...new Set(dataListProgress)]))
+                }
+
+                if (closeStartDiv.className === 'completed') {
+                    drag = false;
+                    dataListCompleted = [...new Set(dataListCompleted)]
+                    console.log(dataListCompleted);
+                    const index = dataListCompleted.indexOf(item.value);
+                    console.log(dataListCompleted);
+                    dataListCompleted.splice(index,1)
+                    console.log(dataListCompleted);
+                    localStorage.setItem('completed', JSON.stringify([...new Set(dataListCompleted)]))
+                }
+            }
+        })
+    })
+    
 
     li.forEach(item => {
         item.addEventListener('touchmove', (e) => {
             e.preventDefault()
-            if(item.getAttribute('draggable')) {
-                item.style.top =`${e.touches[0].clientY - item.offsetHeight /2}px`
-                item.style.left = `${e.touches[0].clientX - item.offsetWidth / 2}px`
-            }
+            if(closeLi.getAttribute('draggable')) {
+            closeLi = e.target.closest('li');
+            closeLi.style.top = `${e.target.offsetHeight}px`;
+            closeLi.style.width = '300px';
 
-            let ourEle = document.elementsFromPoint(
+            
+            const ourEle = document.elementsFromPoint(
                 e.touches[0].clientX,
-                e.touches[0].clientY
+                e.touches[0].clientY,
             )
 
-            ourEle.forEach(element => {
-               if(element.className ==='not-started' && element.className != closeStartDiv.className) {
-                   const taskBtn = element.querySelector('.add-note');
-                   taskBtn.insertAdjacentElement('beforebegin', item) 
-                   const input = element.querySelector('input')
-                   dataListStarted.push(input.value)
-                   localStorage.setItem('not-started',JSON.stringify(dataListStarted))
-                
-               }
-                if (element.className === 'in-progress' && element.className != closeStartDiv.className) {
+            ourEle.forEach(ele => {
+               
+                if(ele.className == 'in-progress' ) {
+                    const taskBtn = ele.querySelector('.add-note');
+                    taskBtn.insertAdjacentElement('beforebegin', closeLi)
+                    dataListProgress.push(item.value)
+                    localStorage.setItem('in-progress', JSON.stringify([...new Set(dataListProgress)]))
                     
-                    const taskBtn = element.querySelector('.add-note');
-                    taskBtn.insertAdjacentElement('beforebegin',item) 
-                    const input = element.querySelector('input')
-                    dataListProgress.push(input.value)
-                    localStorage.setItem('in-progress', JSON.stringify(dataListProgress))
                 }
-                if (element.className === 'completed' && element.className != closeStartDiv.className) {
 
-                    const taskBtn = element.querySelector('.add-note');
-                    taskBtn.insertAdjacentElement('beforebegin', item) 
-                    const input = element.querySelector('input')
-                    dataListCompleted.push(input.value)
-                    localStorage.setItem('completed', JSON.stringify(dataListCompleted))
+                if (ele.className == 'not-started') {
+                    const taskBtn = ele.querySelector('.add-note');
+                    taskBtn.insertAdjacentElement('beforebegin', closeLi)
+                    dataListStarted.push(item.value)
+                    localStorage.setItem('not-started', JSON.stringify([...new Set(dataListStarted)]))
+
                 }
-            })
+
+                if (ele.className == 'completed') {
+                    const taskBtn = ele.querySelector('.add-note');
+                    taskBtn.insertAdjacentElement('beforebegin', closeLi)
+                    dataListCompleted.push(item.value)
+                    localStorage.setItem('completed', JSON.stringify([...new Set(dataListCompleted)]))
+
+                }
+            })}
         })
+    
     })
+   
+
+
 }
+
+
 // Edit Tasks
 function editProcess(storageName, listType, input) {
 
@@ -337,3 +373,5 @@ if (isMobileDevice) {
   draggableMouse()
 }
 
+draggableMouse()
+draggableTouch()
