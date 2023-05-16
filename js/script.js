@@ -199,21 +199,29 @@ function dragTouch(...tasks) {
 }
 
 function dragTouchStart(e) {
+    let li;
     e.stopPropagation()
+
     closestStartDiv = e.target.closest('div');
-    // e.target.closest('li').classList.remove('drop_touch--end')
-    // e.target.closest('li').classList.add('drop_touch--start')
-    e.target.closest('li').style.position ='absolute';
-    e.target.closest('li').style.opacity = 0.5;
+    if (e.target.className === 'task')
+        li = e.target;
+    else
+        li = e.target.closest('li')
+    li.classList.add('drop_touch--start')
+    li.classList.remove('drop_touch--end')
     drag = e.target.closest('li').querySelector('input');
 }
 
 function dragTouchEnd(e) {
+    let li;
     e.stopPropagation()
     closestEndDiv = e.target.closest('div');
-    // e.target.closest('li').classList.remove('drop_touch--start')
-    e.target.closest('li').classList.add('drop_touch--end')
-    e.target.closest('li').style.opacity = 1;
+    if(e.target.className === 'task')
+     li = e.target;
+    else 
+      li = e.target.closest('li')
+    li.classList.remove('drop_touch--start')
+    li.classList.add('drop_touch--end')
 
     if (closestStartDiv !== closestEndDiv) {
         dataList.forEach(data => {

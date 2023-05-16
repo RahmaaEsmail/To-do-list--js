@@ -65,6 +65,10 @@ ul li {
     cursor: pointer;
 }
 
+.task {
+    position: relative;
+}
+
 input {
     width: 100%;
     border: none;
@@ -98,17 +102,17 @@ ul li span {
     align-items: center;
 }
 
-.drop_touch--start {
+.task.drop_touch--start {
     position: absolute;
     opacity: 0.5;
 }
 
-.drop_touch--end {
+.task.drop_touch--end {
     position: relative !important;
     top: auto !important;
     left: auto !important;
     width: auto !important;
-    /* opacity: 1; */
+    opacity: 1;
 }
 
 /*****************/
