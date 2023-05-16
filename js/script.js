@@ -9,6 +9,7 @@ let dataList = [];
 const displayStoredData = function () {
     if (localStorage.getItem('dataList') != null) {
         dataList = JSON.parse(localStorage.getItem('dataList'));
+        removeDuplicatesObjFromArray(dataList)
 
         dataList.forEach(item => {
             const { list, data, id } = item;
@@ -73,7 +74,7 @@ const storeData = function (e, data) {
 function removeDuplicatesObjFromArray(dataList) {
     const map = new Map();
     for (let data of dataList) {
-        map.set(data['id'], data)
+        map.set(data['data'], data)
     }
     const iteratorValues = map.values()
     const uniqueData = [...iteratorValues]
