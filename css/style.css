@@ -9,7 +9,6 @@ html {
 }
 
 body {
-    position: relative;
     background-color: #009578;
     display: flex;
     justify-content: center;
@@ -35,7 +34,6 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
-    position: relative;
 }
 
 h2 {
@@ -48,7 +46,6 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
-    position: relative;
 }
 
 ul li {
@@ -68,16 +65,11 @@ ul li {
     cursor: pointer;
 }
 
-ul li.task {
-    position: relative;
-}
-
 input {
     width: 100%;
     border: none;
     font-size: 1.6rem;
     background-color: white;
-    position: relative;
 }
 
 input:focus {
@@ -106,6 +98,18 @@ ul li span {
     align-items: center;
 }
 
+.drop_touch--start {
+    position: absolute;
+    opacity: 0.5;
+}
+
+.drop_touch--end {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    opacity: 1;
+}
 
 /*****************/
 /* BELOW 800px */
