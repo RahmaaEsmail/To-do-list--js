@@ -104,11 +104,11 @@ ul li span {
 }
 
 .drop_touch--end {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: auto;
-    opacity: 1;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: auto !important;
+    /* opacity: 1; */
 }
 
 /*****************/
