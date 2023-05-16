@@ -201,16 +201,19 @@ function dragTouch(...tasks) {
 function dragTouchStart(e) {
     e.stopPropagation()
     closestStartDiv = e.target.closest('div');
-    e.target.closest('li').classList.remove('drop_touch--end')
-    e.target.closest('li').classList.add('drop_touch--start')
+    // e.target.closest('li').classList.remove('drop_touch--end')
+    // e.target.closest('li').classList.add('drop_touch--start')
+    e.target.closest('li').style.position ='absolute';
+    e.target.closest('li').style.opacity = 0.5;
     drag = e.target.closest('li').querySelector('input');
 }
 
 function dragTouchEnd(e) {
     e.stopPropagation()
     closestEndDiv = e.target.closest('div');
-    e.target.closest('li').classList.remove('drop_touch--start')
+    // e.target.closest('li').classList.remove('drop_touch--start')
     e.target.closest('li').classList.add('drop_touch--end')
+    e.target.closest('li').style.opacity = 1;
 
     if (closestStartDiv !== closestEndDiv) {
         dataList.forEach(data => {
