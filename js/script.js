@@ -113,6 +113,7 @@ function editTasks(...li) {
                         input.addEventListener('change', function (e) {
                             data['data'] = input.value;
                             localStorage.setItem('dataList', JSON.stringify(dataList))
+                            removeDuplicatesObjFromArray(dataList)
                             disableInput()
                         })
 
