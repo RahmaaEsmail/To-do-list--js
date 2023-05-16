@@ -200,6 +200,7 @@ function dragTouch(...tasks) {
 function dragTouchStart(e) {
     e.stopPropagation()
     closestStartDiv = e.target.closest('div');
+    e.target.closest('li').classList.remove('drop_touch--end')
     e.target.closest('li').classList.add('drop_touch--start')
     drag = e.target.closest('li').querySelector('input');
 }
@@ -207,6 +208,7 @@ function dragTouchStart(e) {
 function dragTouchEnd(e) {
     e.stopPropagation()
     closestEndDiv = e.target.closest('div');
+    e.target.closest('li').classList.remove('drop_touch--start')
     e.target.closest('li').classList.add('drop_touch--end')
 
     if (closestStartDiv !== closestEndDiv) {
