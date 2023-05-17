@@ -1,74 +1,93 @@
-const addBtn = document.querySelectorAll('.add-note');
-const startedBtn = document.querySelector('.add-btn');
-const progressBtn = document.querySelector('.add-progress-btn');
-const completedBtn = document.querySelector('.add-completed-btn');
+'use strict';
+const addTasksBtn = document.querySelectorAll('.add-note');
+const addNotStartedTaskBtn = document.querySelector('.add-btn');
+const addProgressTaskBtn = document.querySelector('.add-progress-btn');
+const addCompletedTaskBtn = document.querySelector('.add-completed-btn');
+const boxes = document.querySelectorAll('.to-do-list-container div');
+let closestStartDiv, closestEndDiv;
+let drag = null;
 let timer;
 let dataList = [];
 
+getDataFromStorage()
+disableInput()
 
-const displayStoredData = function () {
-    if (localStorage.getItem('dataList') != null) {
+function callFunctions(li) {
+    selectDeleteIcon(li)
+    selectEditIcon(li)
+    dragTouch(li)
+    dragMouse(li)
+}
+
+function getDataFromStorage() {
+    if (localStorage.getItem('dataList') != null && localStorage.getItem('dataList') != []) {
         dataList = JSON.parse(localStorage.getItem('dataList'));
         removeDuplicatesObjFromArray(dataList)
-
-        dataList.forEach(item => {
-            const { list, data, id } = item;
-            if (data && data !== '') {
-                const btn = document.querySelector(`.${list}`).querySelector('.add-note')
-                addDataToBoxes(btn, data)
-            }
-        })
+        displayStoredData(dataList)
     }
 }
 
+function displayStoredData(dataList) {
+    dataList.forEach(item => {
+        const { list, data, id } = item;
+        if (data && data !== '') {
+            const divList = document.querySelector(`.${list}`)
+            const btn = divList.querySelector('.add-note')
+            createNewElement(btn, data)
+        }
+    })
 
-const disableInput = function () {
+}
+
+function disableInput() {
     const inputs = document.querySelectorAll('input');
     inputs.forEach(input => {
         input.disabled = true;
     })
 }
 
-displayStoredData()
-disableInput()
+function enableInputs(input) {
+    input.disabled = false;
+    input.focus()
+}
 
-function addDataToBoxes(btn, dataValue = '') {
+function createNewElement(btn, dataValue = '') {
     const li = document.createElement('li');
     li.innerHTML = `<input type="text" value="${dataValue}"><span><ion-icon name="pencil-outline" class="edit-note"></ion-icon> <ion-icon name="trash-outline" class="delete-note"></ion-icon></span>`
     li.draggable = true;
     li.className = 'task';
     btn.insertAdjacentElement('beforebegin', li)
 
-    deleteTasks(li)
-    editTasks(li)
-    dragTouch(li)
-    dragMouse(li)
+    callFunctions(li)
 }
 
-const displayData = function (e) {
-    addDataToBoxes(e.target)
+const addDataToBoxes = function (e) {
+    createNewElement(e.target)
     const inputs = document.querySelectorAll('input');
     getUserData(inputs)
 }
 
 const getUserData = function (inputs) {
     inputs.forEach(input => {
-        input.addEventListener('change', storeData)
+        input.addEventListener('change', storeDataToStorage)
     })
 }
 
-const storeData = function (e, data) {
-    let closestDiv = e.target.closest('div').className;
+const storeDataToStorage = function (e, data = '') {
+    let closestDiv
+    if (e.target.closest('div')) {
+        closestDiv = e.target.closest('div').className;
+    }
     let id = Math.floor(e.timeStamp);
-
     dataList.push(
         {
             list: closestDiv,
             data: data || e.target.value,
             id: id
         });
+
     removeDuplicatesObjFromArray(dataList)
-    e.target.disabled = true;
+    disableInput()
 }
 
 function removeDuplicatesObjFromArray(dataList) {
@@ -81,56 +100,54 @@ function removeDuplicatesObjFromArray(dataList) {
     localStorage.setItem('dataList', JSON.stringify(uniqueData));
 }
 
-function deleteTasks(...li) {
+
+// Delete Taks
+function selectDeleteIcon(...li) {
     li.forEach(task => {
         task.addEventListener('click', (e) => {
             let input = task.querySelector('input')
-
-            if (e.target.classList.contains('delete-note')) {
-                e.stopPropagation()
-                dataList = dataList.filter(data => data['data'] !== input.value  )
-                localStorage.setItem('dataList',JSON.stringify(dataList))
-                e.target.closest('li').remove()
-            }
+            if (e.target.classList.contains('delete-note'))
+                deleteTasks(input, e)
         })
     })
 }
 
-function editTasks(...li) {
+function deleteTasks(input, e) {
+    dataList = dataList.filter(data => data['data'] !== input.value)
+    localStorage.setItem('dataList', JSON.stringify(dataList))
+    e.target.closest('li').remove()
+}
+
+
+// Edit Task
+function selectEditIcon(...li) {
     li.forEach(item => {
         item.addEventListener('click', function (e) {
+            const div = item.closest('div').className;
             if (e.target.classList.contains('edit-note')) {
-                e.stopPropagation()
                 const input = e.target.closest('li').querySelector('input')
-                input.disabled = false;
-                input.focus()
-
-                const div = item.closest('div').className;
-
-                dataList.forEach(data => {
-                    if (data['list'] === div && data['data'] == input.value) {
-
-                        input.addEventListener('change', function (e) {
-                            data['data'] = input.value;
-                            localStorage.setItem('dataList', JSON.stringify(dataList))
-                            removeDuplicatesObjFromArray(dataList)
-                            disableInput()
-                        })
-
-                    }
-                })
+                enableInputs(input)
+                editTasks(div, input)
             }
         })
     })
 }
 
+function editTasks(div, input) {
+    dataList.forEach(data => {
+        if (data['list'] === div && data['data'] == input.value) {
+            input.addEventListener('change', function (e) {
+                data['data'] = input.value;
+                removeDuplicatesObjFromArray(dataList)
+                disableInput()
+            })
+        }
+    })
+}
 
 
+// drag Mouse
 function dragMouse(...tasks) {
-    const boxes = document.querySelectorAll('.to-do-list-container div');
-    let closestStartDiv;
-    let drag = null;
-
     tasks.forEach(task => {
         task.addEventListener('dragstart', dragMouseStart)
     })
@@ -155,36 +172,26 @@ function dragMouseStart(e) {
     closestStartDiv = drag.closest('div')
 }
 
-function dragMouseEnd(e) {
-    const className = closestStartDiv.className;
-    const input = drag.querySelector('input').value;
-    e.target.style.opacity = 1;
-
-    dataList.forEach(data => {
-        if (data['list'] === className && data['data'] === input) {
-            const index = dataList.indexOf(data);
-            dataList.splice(index, 1)
-            removeDuplicatesObjFromArray(dataList)
-        }
-    })
-    drag = null;
-}
-
 function dragMouseOver(e) {
     e.preventDefault()
+}
+
+function dragMouseEnd(e) {
+    e.target.style.opacity = 1;
+    drag = null;
 }
 
 function dropMouse(e) {
     const btn = e.target.closest('div').querySelector('.add-note');
     const input = drag.querySelector('input').value
     btn.insertAdjacentElement('beforebegin', drag)
-    storeData(e, input)
+    storeDataToStorage(e, input)
 }
 
 
 
+// drag Touch
 function dragTouch(...tasks) {
-    let closestStartDiv, closestEndDiv, drag;
     tasks.forEach(task => {
         task.addEventListener('touchstart', dragTouchStart)
     })
@@ -199,54 +206,20 @@ function dragTouch(...tasks) {
 }
 
 function dragTouchStart(e) {
-    let li;
-
     closestStartDiv = e.target.closest('div');
-    if (e.target.className === 'task')
-        li = e.target;
-    else
-        li = e.target.closest('li')
-    timer = setTimeout(()=>{
-        li.classList.add('drop_touch--start')
-        // li.classList.remove('drop_touch--end')
-    },300)
+    let li = e.target.className === 'task' ? e.target : e.target.closest('li')
     drag = e.target.closest('li').querySelector('input');
-}
 
-function dragTouchEnd(e) {
-    let li;
-    closestEndDiv = e.target.closest('div');
-    if(e.target.className === 'task')
-     li = e.target;
-    else 
-      li = e.target.closest('li')
-
-    if(timer) {
-        clearTimeout(timer)
-    }
-
-    // li.classList.remove('drop_touch--start')
-    li.classList.add('drop_touch--end')
-
-    if (closestStartDiv !== closestEndDiv) {
-        dataList.forEach(data => {
-            if (data['list'] === closestStartDiv.className && data['data'] === drag.value) {
-                const index = dataList.indexOf(data);
-                dataList.splice(index, 1)
-                localStorage.setItem('dataList', JSON.stringify(dataList))
-                removeDuplicatesObjFromArray(dataList)
-            }
-        })
-
-        storeData(e, drag.value)
-    }
+    timer = setTimeout(() => {
+        li.classList.remove('drop_touch--end')
+        li.classList.add('drop_touch--start')
+    }, 50)
 }
 
 function dragTouchMove(e) {
     e.preventDefault()
     if (e.target.closest('li').getAttribute('draggable')) {
         const li = e.target.closest('li');
-
         li.style.top = `${e.target.clientY}px`;
 
         const ourEle = document.elementsFromPoint(
@@ -264,9 +237,23 @@ function dragTouchMove(e) {
     }
 }
 
+function dragTouchEnd(e) {
+    closestEndDiv = e.target.closest('div');
+    let li = e.target.className === 'task' ? e.target : e.target.closest('li')
 
+    if (timer) {
+        clearTimeout(timer)
+    }
+    li.classList.remove('drop_touch--start')
+    li.classList.add('drop_touch--end')
+
+    if (closestStartDiv !== closestEndDiv) {
+        editTasks(e, drag)
+        storeDataToStorage(e, drag.value)
+    }
+}
 
 // Event Listeners
-addBtn.forEach(add => {
-    add.addEventListener('click', displayData);
+addTasksBtn.forEach(add => {
+    add.addEventListener('click', addDataToBoxes);
 })

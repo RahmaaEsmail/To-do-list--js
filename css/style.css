@@ -103,16 +103,16 @@ ul li span {
 }
 
 .task.drop_touch--start {
-    position: absolute !important;
-    opacity: 0.5 !important;
+    position: absolute;
+    opacity: 0.5;
 }
 
 .task.drop_touch--end {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    width: auto !important;
-    opacity: 1 !important;
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    opacity: 1;
 }
 
 /*****************/
