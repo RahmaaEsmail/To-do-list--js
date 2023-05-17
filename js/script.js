@@ -2,7 +2,7 @@ const addBtn = document.querySelectorAll('.add-note');
 const startedBtn = document.querySelector('.add-btn');
 const progressBtn = document.querySelector('.add-progress-btn');
 const completedBtn = document.querySelector('.add-completed-btn');
-
+let timer;
 let dataList = [];
 
 
@@ -84,16 +84,13 @@ function removeDuplicatesObjFromArray(dataList) {
 function deleteTasks(...li) {
     li.forEach(task => {
         task.addEventListener('click', (e) => {
+            let input = task.querySelector('input')
+
             if (e.target.classList.contains('delete-note')) {
-                dataList.forEach(data => {
-                    if (data['data'] && data['id']) {
-                        const index = dataList.indexOf(data)
-                        dataList.splice(index, 1)
-                        localStorage.setItem('dataList', JSON.stringify(dataList))
-                        removeDuplicatesObjFromArray(dataList)
-                        task.remove()
-                    }
-                })
+                e.stopPropagation()
+                dataList = dataList.filter(data => data['data'] !== input.value  )
+                localStorage.setItem('dataList',JSON.stringify(dataList))
+                e.target.closest('li').remove()
             }
         })
     })
@@ -103,6 +100,7 @@ function editTasks(...li) {
     li.forEach(item => {
         item.addEventListener('click', function (e) {
             if (e.target.classList.contains('edit-note')) {
+                e.stopPropagation()
                 const input = e.target.closest('li').querySelector('input')
                 input.disabled = false;
                 input.focus()
@@ -202,26 +200,31 @@ function dragTouch(...tasks) {
 
 function dragTouchStart(e) {
     let li;
-    e.stopPropagation()
 
     closestStartDiv = e.target.closest('div');
     if (e.target.className === 'task')
         li = e.target;
     else
         li = e.target.closest('li')
-    li.classList.add('drop_touch--start')
-    li.classList.remove('drop_touch--end')
+    timer = setTimeout(()=>{
+        li.classList.add('drop_touch--start')
+        li.classList.remove('drop_touch--end')
+    },300)
     drag = e.target.closest('li').querySelector('input');
 }
 
 function dragTouchEnd(e) {
     let li;
-    e.stopPropagation()
     closestEndDiv = e.target.closest('div');
     if(e.target.className === 'task')
      li = e.target;
     else 
       li = e.target.closest('li')
+
+    if(timer) {
+        clearTimeout(timer)
+    }
+
     li.classList.remove('drop_touch--start')
     li.classList.add('drop_touch--end')
 
