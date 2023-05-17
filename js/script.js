@@ -90,6 +90,7 @@ function deleteTasks(...li) {
                         const index = dataList.indexOf(data)
                         dataList.splice(index, 1)
                         localStorage.setItem('dataList', JSON.stringify(dataList))
+                        removeDuplicatesObjFromArray(dataList)
                         task.remove()
                     }
                 })
