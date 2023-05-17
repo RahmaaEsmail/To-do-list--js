@@ -208,7 +208,7 @@ function dragTouchStart(e) {
         li = e.target.closest('li')
     timer = setTimeout(()=>{
         li.classList.add('drop_touch--start')
-        li.classList.remove('drop_touch--end')
+        // li.classList.remove('drop_touch--end')
     },300)
     drag = e.target.closest('li').querySelector('input');
 }
@@ -225,7 +225,7 @@ function dragTouchEnd(e) {
         clearTimeout(timer)
     }
 
-    li.classList.remove('drop_touch--start')
+    // li.classList.remove('drop_touch--start')
     li.classList.add('drop_touch--end')
 
     if (closestStartDiv !== closestEndDiv) {
