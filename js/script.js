@@ -12,7 +12,7 @@ let dataList = [];
 getDataFromStorage()
 disableInput()
 
-function callFunctions(li) {
+function init(li) {
     selectDeleteIcon(li)
     selectEditIcon(li)
     dragTouch(li)
@@ -58,7 +58,7 @@ function createNewElement(btn, dataValue = '') {
     li.className = 'task';
     btn.insertAdjacentElement('beforebegin', li)
 
-    callFunctions(li)
+    init(li)
 }
 
 const addDataToBoxes = function (e) {
@@ -101,25 +101,25 @@ function removeDuplicatesObjFromArray(dataList) {
 }
 
 
-// Delete Taks
+
 function selectDeleteIcon(...li) {
     li.forEach(task => {
         task.addEventListener('click', (e) => {
             let input = task.querySelector('input')
             if (e.target.classList.contains('delete-note'))
-                deleteTasks(input, e)
+                deleteTask(input, e)
         })
     })
 }
 
-function deleteTasks(input, e) {
+function deleteTask(input, e) {
     dataList = dataList.filter(data => data['data'] !== input.value)
     localStorage.setItem('dataList', JSON.stringify(dataList))
     e.target.closest('li').remove()
 }
 
 
-// Edit Task
+
 function selectEditIcon(...li) {
     li.forEach(item => {
         item.addEventListener('click', function (e) {
@@ -127,13 +127,13 @@ function selectEditIcon(...li) {
             if (e.target.classList.contains('edit-note')) {
                 const input = e.target.closest('li').querySelector('input')
                 enableInputs(input)
-                editTasks(div, input)
+                editTask(div, input)
             }
         })
     })
 }
 
-function editTasks(div, input) {
+function editTask(div, input) {
     dataList.forEach(data => {
         if (data['list'] === div && data['data'] == input.value) {
             input.addEventListener('change', function (e) {
@@ -146,7 +146,6 @@ function editTasks(div, input) {
 }
 
 
-// drag Mouse
 function dragMouse(...tasks) {
     tasks.forEach(task => {
         task.addEventListener('dragstart', dragMouseStart)
@@ -190,7 +189,7 @@ function dropMouse(e) {
 
 
 
-// drag Touch
+
 function dragTouch(...tasks) {
     tasks.forEach(task => {
         task.addEventListener('touchstart', dragTouchStart)
@@ -248,12 +247,12 @@ function dragTouchEnd(e) {
     li.classList.add('drop_touch--end')
 
     if (closestStartDiv !== closestEndDiv) {
-        editTasks(e, drag)
+        editTask(e, drag)
         storeDataToStorage(e, drag.value)
     }
 }
 
-// Event Listeners
+
 addTasksBtn.forEach(add => {
     add.addEventListener('click', addDataToBoxes);
 })
