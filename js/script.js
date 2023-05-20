@@ -78,7 +78,7 @@ const storeDataToStorage = function (e, data = '') {
     if (e.target.closest('div')) {
         closestDiv = e.target.closest('div').className;
     }
-    let id = Math.floor(e.timeStamp);
+    let id = Math.floor(Date.now());
     dataList.push(
         {
             list: closestDiv,
@@ -212,7 +212,7 @@ function dragTouchStart(e) {
     timer = setTimeout(() => {
         li.classList.remove('drop_touch--end')
         li.classList.add('drop_touch--start')
-    }, 50)
+    }, 300)
 }
 
 function dragTouchMove(e) {

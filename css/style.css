@@ -46,6 +46,7 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
+    position: relative;
 }
 
 ul li {
@@ -103,6 +104,7 @@ ul li span {
 }
 
 .task.drop_touch--start {
+    width: 100%;
     position: absolute;
     opacity: 0.5;
 }

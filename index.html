@@ -1,46 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To Do List</title>
-    <link rel="shortcut icon" href="images/png-transparent-checkmark-done-exam-list-pencil-todo-xomo-basics-icon-thumbnail.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css" />
-    <script
-    defer
-    type="module"
-    src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-    defer
-    nomodule
-    src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-    ></script>
-    <script src="js/script.js" defer></script>
-  </head>
 
-      <div class="to-do-list-container">
-         <div class="not-started">
-             <h2>Not Started</h2>
-             <ul>
-                <li draggable="true" class="add-note add-btn"><ion-icon name="add-outline"></ion-icon> Add</li>
-            </ul>
-         </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To Do List</title>
+  <link rel="shortcut icon"
+    href="images/png-transparent-checkmark-done-exam-list-pencil-todo-xomo-basics-icon-thumbnail.png"
+    type="image/x-icon">
+  <link rel="stylesheet" href="css/style.css" />
+  <script defer type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script defer nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="js/script.js" defer></script>
+</head>
 
-         <div class="in-progress">
-             <h2>In Progress</h2>
-             <ul>
-                <li class="add-note add-progress-btn"><ion-icon name="add-outline"></ion-icon> Add</li>
-            </ul>
-         </div>
+<div class="to-do-list-container">
+  <div class="not-started">
+    <h2>Not Started</h2>
+    <ul>
+      <li draggable="true" class="add-note add-btn"><ion-icon name="add-outline"></ion-icon> Add</li>
+    </ul>
+  </div>
 
-         <div class="completed">
-             <h2>Completed</h2>
-             <ul>
-                <li class="add-note add-completed-btn"><ion-icon name="add-outline"></ion-icon> Add</li>
-            </ul>
-         </div>
-      </div>
-  </body>
+  <div class="in-progress">
+    <h2>In Progress</h2>
+    <ul>
+      <li class="add-note add-progress-btn"><ion-icon name="add-outline"></ion-icon> Add</li>
+    </ul>
+  </div>
+
+  <div class="completed">
+    <h2>Completed</h2>
+    <ul>
+      <li class="add-note add-completed-btn"><ion-icon name="add-outline"></ion-icon> Add</li>
+    </ul>
+  </div>
+</div>
+</body>
+
 </html>
